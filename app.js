@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 
 //////// Routers y conexión a MongoDB
-// const dbConnect = require('./config/mongo');
+const dbConnect = require('./src/config/mongo');
 // const userRouter = require('./routes/user.js');
 // etc...
 
