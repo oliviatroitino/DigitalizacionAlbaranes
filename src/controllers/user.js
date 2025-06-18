@@ -1,6 +1,6 @@
 const { matchedData } = require("express-validator");
 const { encrypt } = require("../utils/handlePassword");
-const { userModel } = require("../models/nosql/user");
+const UserModel = require("../models/nosql/user");
 const { handleHttpError } = require("../utils/handleError");
 
 const registerUser = async (req, res) => {
@@ -15,12 +15,13 @@ const registerUser = async (req, res) => {
             emailCode // nuevo campo
         };
 
-        const newUser = await userModel.create(userToCreate);
+        const newUser = await UserModel.create(userToCreate);
         newUser.set("password", undefined, {strict: false});
         newUser.set("emailCode", undefined, {strict: false});
 
         res.send({ user: newUser });
     } catch (err) {
+        console.log(err);
         handleHttpError(res, "ERROR_REGISTER_USER", 500);
     }
 }
