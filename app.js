@@ -4,14 +4,14 @@ const cors = require("cors");
 
 //////// Routers y conexión a MongoDB
 const dbConnect = require('./src/config/mongo');
-// const userRouter = require('./routes/user.js');
+const userRouter = require('./src/routes/user.js');
 // etc...
 
 app.use(cors())
 app.use(express.json());
 
 //////// Rutas
-// app.use('/users', userRouter);
+app.use('/api/user', userRouter);
 
 dbConnect();
 
