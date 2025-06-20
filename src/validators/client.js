@@ -17,6 +17,24 @@ const validatorGetId = [
     (req, res, next) => {
         return validateResults(req, res, next);
     }
-]
+];
 
-module.exports = { validatorCreateClient, validatorGetId };
+const validatorUpdateClient = [
+    check("name").exists().notEmpty().isString(),
+    check("cif")
+        .exists()
+        .notEmpty()
+        .isString()
+        .matches(/^[A-Z][0-9]{8}$/),
+    check("address").exists().notEmpty(),
+    check("address.street").exists().notEmpty().isString(),
+    check("address.number").exists().notEmpty().isNumeric(),
+    check("address.postal").exists().notEmpty().isNumeric(),
+    check("address.city").exists().notEmpty().isString(),
+    check("address.province").exists().notEmpty().isString(),
+    (req, res, next) => {
+        return validateResults(req, res, next);
+    }
+];
+
+module.exports = { validatorCreateClient, validatorGetId, validatorUpdateClient };
