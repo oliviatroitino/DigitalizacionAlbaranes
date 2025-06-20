@@ -19,7 +19,7 @@ const createProject = async (req, res) => {
             return handleHttpError(res, "CLIENT_NOT_FOUND", 404);
         }
 
-        const newProject = await ProjectModel.create(body);
+        const newProject = await ProjectModel.create({...body, userId: user._id});
 
         res.send({ data: newProject, message: "Project created correctly."});
     } catch (error) {
@@ -33,12 +33,10 @@ const getProjects = async (req, res) => {
         const user = req.user;
         const { client } = req.query;
 
-        // const projects = await ProjectModel.find({
-        //     userId: user._id,
-        //     deleted: false
-        // });
-        
-        const projects = await ProjectModel.find();
+        const projects = await ProjectModel.find({
+            userId: user._id,
+            deleted: false
+        });
 
         res.send(projects);
     } catch(error) {
