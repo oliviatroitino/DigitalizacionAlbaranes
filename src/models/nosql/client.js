@@ -34,7 +34,8 @@ const ClientSchema = mongoose.Schema(
         },
         deleted: {
             type: Boolean,
-            default: false
+            default: false,
+            required: true
         }
     }
 );
