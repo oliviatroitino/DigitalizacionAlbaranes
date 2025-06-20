@@ -50,4 +50,31 @@ const getClientById = async (req, res) => {
     }
 }
 
+const updateClient = async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user) {
+            return handleHttpError(res, 'ERROR_USER_NOT_FOUND', 403);
+        }
+        const { id } = matchedData(req);
+        const body = req.body;
+
+        const updatedClient = await ClientModel.findOneAndUpdate(
+            { _id: id, userId: user._id, deleted: false }, 
+            body,
+            { new: true }
+        );
+
+        if (!updatedClient) {
+            return handleHttpError(res, 'ERROR_CLIENT_NOT_FOUND', 404);
+        }
+
+        res.send({ data: updatedClient, message: "Cliente actualizado correctamente." });
+    } catch (error) {
+        console.error(`ERROR in updateClient: ${error}`);
+        handleHttpError(res, 'ERROR_UPDATE_CLIENT', 403);
+    }
+};
+
 module.exports = { createClient, getClients, getClientById };
