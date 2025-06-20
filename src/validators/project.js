@@ -39,4 +39,22 @@ const validatorGetProject = [
     }
 ];
 
-module.exports = { validatorCreateProject, validatorGetProject, validatorGetProjects };
+const validatorUpdateProject = [
+  check("name").optional().isString(),
+  check("projectCode").optional().isString(),
+  check("email").optional().isEmail(),
+  check("code").optional().isString(),
+
+  check("address").optional(),
+  check("address.street").optional().isString(),
+  check("address.number").optional().isNumeric(),
+  check("address.postal").optional().isNumeric(),
+  check("address.city").optional().isString(),
+  check("address.province").optional().isString(),
+
+  check("clientId").optional().isMongoId(),
+
+  (req, res, next) => validateResults(req, res, next)
+];
+
+module.exports = { validatorCreateProject, validatorGetProject, validatorGetProjects, validatorUpdateProject };

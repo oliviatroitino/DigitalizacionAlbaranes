@@ -1,6 +1,6 @@
 const ProjectModel = require("../models/nosql/project");
 const ClientModel = require("../models/nosql/client");
-const { matchedData } = require("express-validator");
+const { matchedData, body } = require("express-validator");
 const { handleHttpError } = require("../utils/handleError");
 const { tokenSign } = require("../utils/handleJwt");
 
@@ -64,4 +64,21 @@ const getProject = async (req, res) => {
     }
 }
 
-module.exports = { createProject, getProjects, getProject };
+const updateProject = async (req, res) => {
+    try {
+        const body = matchedData(req, { locations: ['body'] });
+        const id = req.params.id;
+        const updatedProject = await ProjectModel.findOneAndUpdate({_id: id}, body);
+
+        if (!updatedProject) {
+            return handleHttpError(res, 'ERROR_PROJECT_NOT_FOUND', 404);
+        }
+
+        res.send({ data: updatedProject, message: "Proyecto actualizado correctamente." });
+    } catch( error ){
+        console.error("ERROR_UPDATE_PROJECT:", error);
+        handleHttpError(res, "ERROR_UPDATE_PROJECT", 500);
+    }
+}
+
+module.exports = { createProject, getProjects, getProject, updateProject };
