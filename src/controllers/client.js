@@ -74,4 +74,30 @@ const updateClient = async (req, res) => {
     }
 };
 
-module.exports = { createClient, getClients, getClientById, updateClient };
+const deleteClient = async (req, res) => {
+    try {
+        const { id } = matchedData(req);
+        const soft = req.query.soft !== "false";
+
+        const client = await ClientModel.findById(id);
+
+        if(!client){
+            handleHttpError(res, 'ERROR_CLIENT_NOT_FOUND', 404);
+        }
+
+        if (soft) {
+            client.deleted = true;
+            await client.save();
+            return res.send({ message: "Cliente eliminado correctamente (soft delete)." });
+        } else {
+            await ClientModel.findByIdAndDelete(id);
+            return res.send({ message: "Cliente eliminado permanentemente (hard delete)." });
+        }
+
+    } catch (error) {
+        console.error(`ERROR in deleteClient: ${error}`);
+        handleHttpError(res, 'ERROR_DELETE_CLIENT', 403);
+    }
+}
+
+module.exports = { createClient, getClients, getClientById, updateClient, deleteClient };
