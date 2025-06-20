@@ -1,0 +1,15 @@
+const { check } = require("express-validator");
+const { validateResults } = require("../utils/handleValidator");
+
+const validatorCreateClient = [
+  check("name").exists().notEmpty(),
+  check("cif").exists().notEmpty(),
+  check("address.street").exists().notEmpty(),
+  check("address.number").exists().notEmpty().isNumeric(),
+  check("address.postal").exists().notEmpty().isNumeric(),
+  check("address.city").exists().notEmpty(),
+  check("address.province").exists().notEmpty(),
+  (req, res, next) => validateResults(req, res, next)
+];
+
+module.exports = { validatorCreateClient };
