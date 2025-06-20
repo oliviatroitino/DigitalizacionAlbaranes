@@ -12,4 +12,11 @@ const validatorCreateClient = [
   (req, res, next) => validateResults(req, res, next)
 ];
 
-module.exports = { validatorCreateClient };
+const validatorGetId = [
+    check("id").exists().notEmpty().isMongoId(),
+    (req, res, next) => {
+        return validateResults(req, res, next);
+    }
+]
+
+module.exports = { validatorCreateClient, validatorGetId };
