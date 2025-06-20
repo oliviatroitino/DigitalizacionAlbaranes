@@ -22,10 +22,10 @@ const validatorGetId = [
 const validatorUpdateClient = [
     check("name").exists().notEmpty().isString(),
     check("cif")
-        .exists()
-        .notEmpty()
-        .isString()
-        .matches(/^[A-Z][0-9]{8}$/),
+      .exists().withMessage("CIF is required")
+      .notEmpty().withMessage("CIF must not be empty")
+      .isString().withMessage("CIF must be a string")
+      .matches(/^[A-Z][0-9]{8}$/).withMessage("CIF format is invalid (expected format: A12345678)"),
     check("address").exists().notEmpty(),
     check("address.street").exists().notEmpty().isString(),
     check("address.number").exists().notEmpty().isNumeric(),
