@@ -36,7 +36,7 @@ const getProjects = async (req, res) => {
         // console.log("Tipo de user._id:", typeof user._id);
         // console.log("user._id:", user._id);
 
-        const filter = { userId: user._id };
+        const filter = { userId: user._id }; // TODO deberian ser los no deleted pero no sale
 
         if (client) {
             filter.clientId = client;
@@ -81,4 +81,29 @@ const updateProject = async (req, res) => {
     }
 }
 
-module.exports = { createProject, getProjects, getProject, updateProject };
+const deleteProject = async (req, res) => {
+    try {
+        const { id } = matchedData(req);
+        const soft = req.query.soft !== "false";
+
+        const project = await ProjectModel.findById(id);
+
+        if(!project){
+            handleHttpError(res, 'ERROR_PROJECT_NOT_FOUND', 404);
+        }
+
+        if (soft) {
+            project.deleted = true;
+            await project.save();
+            return res.send({ message: "Proyecto eliminado correctamente (soft delete)." });
+        } else {
+            await ProjectModel.findByIdAndDelete(id);
+            return res.send({ message: "Proyecto eliminado permanentemente (hard delete)." });
+        }
+    } catch (error) {
+        console.error(`ERROR_DELETE_PROJECT: ${error}`);
+        handleHttpError(res, 'ERROR_DELETE_PROJECT', 403);
+    }
+}
+
+module.exports = { createProject, getProjects, getProject, updateProject, deleteProject };
