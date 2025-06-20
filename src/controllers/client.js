@@ -17,4 +17,15 @@ const createClient = async (req, res) => {
     }
 };
 
-module.exports = { createClient };
+const getClients = async (req, res) => {
+    try {
+        const user = req.user;
+        const result = await ClientModel.find({userId: user.id, deleted: false})
+        res.send(result);
+    } catch (error) {
+        console.error(`ERROR in getClients: ${error}`);
+        handleHttpError(res, 'ERROR_GET_CLIENTS', 403);
+    }
+}
+
+module.exports = { createClient, getClients };
