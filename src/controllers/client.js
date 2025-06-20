@@ -77,4 +77,4 @@ const updateClient = async (req, res) => {
     }
 };
 
-module.exports = { createClient, getClients, getClientById };
+module.exports = { createClient, getClients, getClientById, updateClient };
