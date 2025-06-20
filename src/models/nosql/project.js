@@ -13,7 +13,12 @@ const ProjectSchema = mongoose.Schema(
             province: { type: String, required: true }
         },
         code: { type: String, required: true },
-        clientId: { type: mongoose.Schema.Types.ObjectId, ref: "Client", required: true }
+        clientId: { type: mongoose.Schema.Types.ObjectId, ref: "Client", required: true },
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
+            required: true
+        }
     }
 );
 
