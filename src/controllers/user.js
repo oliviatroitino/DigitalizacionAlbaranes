@@ -100,7 +100,29 @@ const loginUser = async (req, res) => {
 
     const token = await tokenSign(user);
     user.set("password", undefined, { strict: false });
-    res.send({ user, token });
+    res.send({ user, token, message: "User logged in." });
 }
+
+const updateUser = async (req, res) => {
+    try {
+        const data = matchedData(req);
+        const user = req.user;
+
+        user.name = data.name;
+        user.surnames = data.surnames;
+        user.nif = data.nif;
+        user.company = data.company;
+
+        await user.save();
+
+        user.set("password", undefined, { strict: false });
+
+        res.send({ message: "Datos usuario actualizados correctamente: ", user });
+
+    } catch (error) {
+        console.error("ERROR_UPDATE_USER:", error);
+        handleHttpError(res, "ERROR_UPDATE_USER", 500);
+    }
+};
 
 module.exports = { registerUser, verifyEmail, loginUser };
