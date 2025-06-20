@@ -51,4 +51,17 @@ const getProjects = async (req, res) => {
     }
 }
 
-module.exports = { createProject, getProjects };
+const getProject = async (req, res) => {
+    try {
+        const { id } = matchedData(req);
+
+        const project = await ProjectModel.findOne({_id: id});
+        
+        res.send(project);
+    } catch(error) {
+        console.error("ERROR_GET_PROJECT:", error);
+        handleHttpError(res, "ERROR_GET_PROJECT", 500);
+    }
+}
+
+module.exports = { createProject, getProjects, getProject };
