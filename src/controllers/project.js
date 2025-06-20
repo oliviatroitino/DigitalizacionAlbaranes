@@ -33,10 +33,16 @@ const getProjects = async (req, res) => {
         const user = req.user;
         const { client } = req.query;
 
-        const projects = await ProjectModel.find({
-            userId: user._id,
-            deleted: false
-        });
+        // console.log("Tipo de user._id:", typeof user._id);
+        // console.log("user._id:", user._id);
+
+        const filter = { userId: user._id };
+
+        if (client) {
+            filter.clientId = client;
+        }
+
+        const projects = await ProjectModel.find(filter);
 
         res.send(projects);
     } catch(error) {
