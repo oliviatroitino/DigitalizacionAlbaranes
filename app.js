@@ -6,13 +6,15 @@ const cors = require("cors");
 const dbConnect = require('./src/config/mongo');
 const userRouter = require('./src/routes/user.js');
 const clientRouter = require('./src/routes/client.js');
+const projectRouter = require('./src/routes/project.js');
 
 app.use(cors())
 app.use(express.json());
 
 //////// Rutas
 app.use('/api/user', userRouter);
-app.use('/api/client', clientRouter)
+app.use('/api/client', clientRouter);
+app.use('/api/project', projectRouter);
 
 dbConnect();
 
