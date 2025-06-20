@@ -5,6 +5,6 @@ const { validatorCreateProject, validatorGetProjects } = require("../validators/
 const { createProject, getProjects } = require("../controllers/project");
 
 router.post("/", authMiddleware, validatorCreateProject, createProject);
-router.get("/", authMiddleware, validatorGetProjects, getProjects)
+router.get("/", authMiddleware, validatorGetProjects, getProjects);
 
 module.exports = router;
