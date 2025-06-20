@@ -111,7 +111,6 @@ const updateUser = async (req, res) => {
         user.name = data.name;
         user.surnames = data.surnames;
         user.nif = data.nif;
-        user.company = data.company;
 
         await user.save();
 
@@ -125,4 +124,28 @@ const updateUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, verifyEmail, loginUser };
+const updateCompany = async (req, res) => {
+    try {
+        const data = matchedData(req);
+        const user = req.user;
+
+        if (!user.company) {
+            user.company = {}; // por si no existe
+        }
+
+        user.company.companyName = data.companyName;
+        user.company.companyCif = data.companyCif;
+        user.company.companyAddress = data.companyAddress;
+
+        await user.save();
+
+        user.set("password", undefined, { strict: false });
+
+        res.send({ message: "Datos compañía actualizados correctamente: ", user });
+    } catch (error) {
+        console.error("ERROR_UPDATE_COMPANY:", error);
+        handleHttpError(res, "ERROR_UPDATE_COMPANY", 500);
+    }
+};
+
+module.exports = { registerUser, verifyEmail, loginUser, updateUser, updateCompany };
