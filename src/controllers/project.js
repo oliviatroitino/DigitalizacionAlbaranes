@@ -7,7 +7,6 @@ const createProject = async (req, res) => {
     try {
         const body = matchedData(req);
         const user = req.user;
-        const token = await tokenSign(user);
 
         const client = await ClientModel.findOne({
             _id: body.clientId,
