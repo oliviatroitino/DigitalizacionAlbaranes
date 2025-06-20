@@ -1,5 +1,5 @@
 const { handleHttpError } = require("../utils/handleError");
-const UserModel = require("../models/user.js");
+const UserModel = require("../models/nosql/user.js");
 const { verifyToken } = require("../utils/handleJwt.js")
 
 const authMiddleware = async (req, res, next) => {
