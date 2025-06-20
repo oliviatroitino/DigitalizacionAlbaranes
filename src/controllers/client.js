@@ -28,4 +28,26 @@ const getClients = async (req, res) => {
     }
 }
 
-module.exports = { createClient, getClients };
+const getClientById = async (req, res) => {
+    try {
+        const {id} = matchedData(req);
+        const userId = req.user._id;
+
+        const client = await ClientModel.findOne({
+            _id: id,
+            userId: userId,
+            deleted: false
+        });
+
+        if(!client){
+            return handleHttpError(res, "CLIENT_NOT_FOUND", 404);
+        }
+
+        res.send(client);
+    } catch (error) {
+        console.error(`ERROR in getClient: ${error}`);
+        handleHttpError(res, 'ERROR_GET_CLIENTS', 403);
+    }
+}
+
+module.exports = { createClient, getClients, getClientById };
