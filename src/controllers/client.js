@@ -1,12 +1,11 @@
 require('dotenv').config();
-const ClientModel = require('../models/client');
+const ClientModel = require('../models/nosql/client');
 const { handleHttpError } = require('../utils/handleError.js');
 const { matchedData } = require('express-validator');
 
 const createClient = async (req, res) => {
     try {
         const user = req.user;
-        // console.log(`Current user: ${user.name}, ${user.id}`);
         if (!user) throw new Error("ERROR_USER_NOT_FOUND");
         if (user.deleted) throw new Error("ERROR_USER_DELETED");
         const body = matchedData(req);
@@ -17,3 +16,5 @@ const createClient = async (req, res) => {
         handleHttpError(res, 'ERROR_CREATE_CLIENT', 403);
     }
 };
+
+module.exports = { createClient };
