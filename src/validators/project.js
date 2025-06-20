@@ -22,6 +22,14 @@ const validatorCreateProject = [
 ];
 
 const validatorGetProjects = [
+    check("client")
+      .optional()
+      .isMongoId()
+      .withMessage("Client ID must be a valid Mongo ID"),
+    (req, res, next) => validateResults(req, res, next),
+];
+
+const validatorGetProject = [
     check("id")
       .exists().withMessage("ID is required")
       .notEmpty().withMessage("ID cannot be empty")
@@ -31,4 +39,4 @@ const validatorGetProjects = [
     }
 ];
 
-module.exports = { validatorCreateProject, validatorGetProjects };
+module.exports = { validatorCreateProject, validatorGetProject, validatorGetProjects };
