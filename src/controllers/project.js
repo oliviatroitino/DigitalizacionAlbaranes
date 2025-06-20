@@ -27,4 +27,21 @@ const createProject = async (req, res) => {
     }
 };
 
-module.exports = { createProject };
+const getProjects = async (req, res) => {
+    try {
+        const user = req.user;
+        const { client } = req.query;
+
+        const projects = await ProjectModel.find({
+            userId: user._id,
+            deleted: false
+        });
+
+        res.send(projects);
+    } catch(error) {
+        console.error("ERROR_GET_PROJECTS:", error);
+        handleHttpError(res, "ERROR_GET_PROJECTS", 500);
+    }
+}
+
+module.exports = { createProject, getProjects };
