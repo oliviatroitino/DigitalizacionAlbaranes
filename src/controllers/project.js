@@ -33,10 +33,12 @@ const getProjects = async (req, res) => {
         const user = req.user;
         const { client } = req.query;
 
-        const projects = await ProjectModel.find({
-            userId: user._id,
-            deleted: false
-        });
+        // const projects = await ProjectModel.find({
+        //     userId: user._id,
+        //     deleted: false
+        // });
+        
+        const projects = await ProjectModel.find();
 
         res.send(projects);
     } catch(error) {
