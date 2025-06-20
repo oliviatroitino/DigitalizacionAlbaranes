@@ -52,18 +52,15 @@ const getClientById = async (req, res) => {
 
 const updateClient = async (req, res) => {
     try {
-        const user = req.user;
+        const body = matchedData(req, { locations: ['body'] });
+        const id = req.params.id;
+        const userId = req.user._id;
 
-        if (!user) {
-            return handleHttpError(res, 'ERROR_USER_NOT_FOUND', 403);
-        }
-        const { id } = matchedData(req);
-        const body = req.body;
-
-        const updatedClient = await ClientModel.findOneAndUpdate(
-            { _id: id, userId: user._id, deleted: false }, 
-            body,
-            { new: true }
+        const updatedClient = await ClientModel.findOneAndUpdate({
+            _id: id,
+            userId: userId,
+            deleted: false
+        }, body, {new: true}
         );
 
         if (!updatedClient) {
