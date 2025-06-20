@@ -69,7 +69,7 @@ const updateClient = async (req, res) => {
 
         res.send({ data: updatedClient, message: "Cliente actualizado correctamente." });
     } catch (error) {
-        console.error(`ERROR in updateClient: ${error}`);
+        console.error(`ERROR_UPDATE_CLIENT: ${error}`);
         handleHttpError(res, 'ERROR_UPDATE_CLIENT', 403);
     }
 };
