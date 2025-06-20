@@ -11,4 +11,12 @@ const validatorMail = [
   },
 ];
 
-module.exports = { validatorMail };
+const validatorEmailCode = [
+  check("email").exists().notEmpty(),
+  check("emailCode").exists().notEmpty(),
+  (req, res, next) => {
+    return validateResults(req, res, next);
+  },
+];
+
+module.exports = { validatorMail, validatorEmailCode };
