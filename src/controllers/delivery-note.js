@@ -113,7 +113,7 @@ const updateDeliveryNote = async (req, res) => {
         const deliveryNote = await DeliveryNoteModel.findOne({ _id: id, deleted: false });
 
         if (!deliveryNote) {
-        return handleHttpError(res, "DELIVERYNOTE_NOT_FOUND", 404);
+            return handleHttpError(res, "DELIVERYNOTE_NOT_FOUND", 404);
         }
 
         Object.assign(deliveryNote, data);
@@ -127,4 +127,29 @@ const updateDeliveryNote = async (req, res) => {
     }
 };
 
-module.exports = { createDeliveryNote, getDeliveryNotes, getDeliveryNoteById, updateDeliveryNote };
+const deleteDeliveryNote = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const soft = req.query.soft !== "false";
+
+        const deliveryNote = await DeliveryNoteModel.findOne({ _id: id });
+
+        if (!deliveryNote) {
+            return handleHttpError(res, "DELIVERYNOTE_NOT_FOUND", 404);
+        }
+
+        if (soft) {
+            deliveryNote.deleted = true;
+            await deliveryNote.save();
+            return res.send({ message: "Albarán eliminado correctamente (soft delete)." });
+        } else {
+            await DeliveryNoteModel.findByIdAndDelete(id);
+            return res.send({ message: "Albarán eliminado permanentemente (hard delete)." });
+        }
+    } catch (error) {
+        console.error("ERROR_DELETE_DELIVERYNOTE:", error);
+        handleHttpError(res, "ERROR_DELETE_DELIVERYNOTE", 500);
+    }
+};
+
+module.exports = { createDeliveryNote, getDeliveryNotes, getDeliveryNoteById, updateDeliveryNote, deleteDeliveryNote };

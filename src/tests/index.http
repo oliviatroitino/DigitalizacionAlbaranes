@@ -241,3 +241,11 @@ Authorization: Bearer {{token}}
   "workers": ["Juan", "María"],
   "photo": "nuevo.jpg"
 }
+
+########### DELETE DELIVERY NOTE (SOFT) ######################
+DELETE http://localhost:3000/api/deliverynote/{{deliverynote_id}}
+Authorization: Bearer {{token}}
+
+########### DELETE DELIVERY NOTE (HARD) ######################
+DELETE http://localhost:3000/api/deliverynote/{{deliverynote_id}}?soft=false
+Authorization: Bearer {{token}}
