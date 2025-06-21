@@ -85,4 +85,25 @@ const getDeliveryNotes = async (req, res) => {
     }
 };
 
-module.exports = { createDeliveryNote, getDeliveryNotes };
+const getDeliveryNoteById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deliveryNote = await DeliveryNoteModel.findOne({
+            _id: id,
+            deleted: false
+        });
+
+        if (!deliveryNote) {
+            return handleHttpError(res, "DELIVERYNOTE_NOT_FOUND", 404);
+        }
+
+        res.send(deliveryNote);
+    } catch (error) {
+        console.error("ERROR_GET_DELIVERYNOTE_BY_ID:", error);
+        handleHttpError(res, "ERROR_GET_DELIVERYNOTE_BY_ID", 500);
+    }
+};
+
+
+module.exports = { createDeliveryNote, getDeliveryNotes, getDeliveryNoteById };

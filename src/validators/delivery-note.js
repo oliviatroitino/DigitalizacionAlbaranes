@@ -47,4 +47,12 @@ const validatorGetDeliveryNotes = [
     (req, res, next) => validateResults(req, res, next),
 ];
 
-module.exports = { validatorCreateDeliveryNote, validatorGetDeliveryNotes };
+const validatorGetDeliveryNoteById = [
+    check("id")
+        .exists().withMessage("ID es obligatorio")
+        .notEmpty().withMessage("ID no puede estar vacío")
+        .isMongoId().withMessage("ID debe ser un Mongo ID válido"),
+    (req, res, next) => validateResults(req, res, next),
+];
+
+module.exports = { validatorCreateDeliveryNote, validatorGetDeliveryNotes, validatorGetDeliveryNoteById };
