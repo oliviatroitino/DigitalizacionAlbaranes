@@ -11,18 +11,15 @@ const createDeliveryNote = async (req, res) => {
         const user = req.user;
         const data = matchedData(req);
 
-        console.log("Datos validados:", data);
-
         // buscar project
 
         const projectId = new mongoose.Types.ObjectId(data.project);
 
-        console.log("Buscando proyecto con:", {
-            _id: projectId,
-            deleted: false
-        });
+        // console.log("Buscando proyecto con:", {
+        //     _id: projectId,
+        //     deleted: false
+        // });
 
-         
         const project = await ProjectModel.findOne({
             _id: data.project,
             deleted: false
@@ -62,6 +59,30 @@ const createDeliveryNote = async (req, res) => {
         console.error("ERROR_CREATE_DELIVERYNOTE: ", error);
         handleHttpError(res, "ERROR_CREATE_DELIVERYNOTE", 500);
     }
-}
+};
 
-module.exports = { createDeliveryNote };
+const getDeliveryNotes = async (req, res) => {
+    try {
+        const user = req.user;
+        const { project, clientId } = req.query;
+
+        const filter = { deleted: false };
+
+        if (project) {
+            filter.project = project;
+        }
+
+        if (clientId) {
+            filter.clientId = clientId;
+        }
+
+        const deliveryNotes = await DeliveryNoteModel.find(filter);
+
+        res.send(deliveryNotes);
+    } catch (error) {
+        console.error("ERROR_GET_DELIVERYNOTES:", error);
+        handleHttpError(res, "ERROR_GET_DELIVERYNOTES", 500);
+    }
+};
+
+module.exports = { createDeliveryNote, getDeliveryNotes };

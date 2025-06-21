@@ -41,4 +41,10 @@ const validatorCreateDeliveryNote = [
     (req, res, next) => validateResults(req, res, next),
 ];
 
-module.exports = { validatorCreateDeliveryNote }
+const validatorGetDeliveryNotes = [
+    check("project").optional().isMongoId().withMessage("Invalid project ID"),
+    check("clientId").optional().isMongoId().withMessage("Invalid client ID"),
+    (req, res, next) => validateResults(req, res, next),
+];
+
+module.exports = { validatorCreateDeliveryNote, validatorGetDeliveryNotes };
