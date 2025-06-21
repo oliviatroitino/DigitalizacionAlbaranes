@@ -31,11 +31,11 @@ const validatorUserData = [
 const validatorCompanyData = [
   check("company.name").exists().notEmpty(),
   check("company.cif").exists().notEmpty(),
-  check("company.street").exists().notEmpty(),
-  check("company.number").exists().notEmpty().isNumeric(),
-  check("company.postal").exists().notEmpty().isNumeric(),
-  check("company.city").exists().notEmpty(),
-  check("company.province").exists().notEmpty(),
+  check("company.address.street").exists().notEmpty(),
+  check("company.address.number").exists().notEmpty().isNumeric(),
+  check("company.address.postal").exists().notEmpty().isNumeric(),
+  check("company.address.city").exists().notEmpty(),
+  check("company.address.province").exists().notEmpty(),
   (req, res, next) => validateResults(req, res, next)
 ];
 

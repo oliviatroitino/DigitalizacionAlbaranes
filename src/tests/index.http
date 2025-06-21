@@ -1,0 +1,209 @@
+######### VARIABLES #######################################
+@name = "Ricardo"
+@email = "sakir73509@nab4.com"
+@password = "HolaMundo123"
+@emailCode = 492354
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODU1NTI0MDgwNzE4ZWMwYTY3NTQxYWMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MDUxNzczOCwiZXhwIjoxNzUwNTI0OTM4fQ.HSSKwWsTxjuLAvHGrjgtyS5IeNAuSOfen_nWItzIX3g
+@user_id = "6855524080718ec0a67541ac"
+@client_id = 685568a26a2f463741df04e3
+@client_id_str = "685568a26a2f463741df04e3"
+@project_id = 6856cc9152f3b739e9c5db26
+@project_id_str = "6856cc9152f3b739e9c5db26"
+
+######### REGISTER ########################################
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+  "name": {{name}},
+  "email": {{email}},
+  "password": {{password}}
+}
+
+######### VALIDATION #######################################
+
+PUT http://localhost:3000/api/user/validation
+Content-Type: application/json
+
+{
+  "email": {{email}},
+  "emailCode": {{emailCode}}
+}
+
+########## LOGIN ###########################################
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": {{email}},
+  "password": {{password}}
+}
+
+########## UPDATE ###########################################
+PATCH http://localhost:3000/api/user
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Ricardo",
+  "surnames": "Martínez Gómez",
+  "nif": "12345678Z",
+  "address": {
+    "street": "Calle",
+    "number": 123,
+    "postal": 28013,
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+########## UPDATE COMPANY ###################################
+PATCH http://localhost:3000/api/user/company
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "company": {
+    "name": "SERVITOP, SL",
+    "cif": "B12345678",
+    "street": "Carlos V",
+    "number": 22,
+    "postal": 28936,
+    "city": "Móstoles",
+    "province": "Madrid"
+  }
+}
+
+########## CREATE CLIENT ####################################
+POST http://localhost:3000/api/client
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Repuestos Pérez SL",
+  "cif": "B10020030",
+  "address": {
+    "street": "Av. de la Industria",
+    "number": 17,
+    "postal": 28023,
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+########## GET CLIENTS ######################################
+GET http://localhost:3000/api/client
+Authorization: Bearer {{token}}
+
+########## GET CLIENT BY ID #################################
+GET http://localhost:3000/api/client/{{client_id}}
+Authorization: Bearer {{token}}
+
+########## UPDATE CLIENT ####################################
+PATCH http://localhost:3000/api/client/{{client_id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Cliente actualizado S.A.",
+  "cif": "A12345678",
+  "address": {
+    "street": "Nueva calle",
+    "number": 99,
+    "postal": 28001,
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+########## DELETE CLIENT (SOFT) ##############################
+DELETE http://localhost:3000/api/client/{{client_id}}
+Authorization: Bearer {{token}}
+
+########## DELETE CLIENT (HARD) ##############################
+DELETE http://localhost:3000/api/client/{{client_id}}?soft=false
+Authorization: Bearer {{token}}
+
+########## CREATE PROJECT ####################################
+POST http://localhost:3000/api/project
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Proyecto Reforma",
+  "projectCode": "REF-001",
+  "email": "contacto@reforma.com",
+  "address": {
+    "street": "Gran Vía",
+    "number": 123,
+    "postal": 28013,
+    "city": "Madrid",
+    "province": "Madrid"
+  },
+  "code": "C123",
+  "clientId": {{client_id_str}}
+}
+
+########### GET PROJECTS #####################################
+GET http://localhost:3000/api/project
+Authorization: Bearer {{token}}
+
+########### GET PROJECT BY ID ################################
+GET http://localhost:3000/api/project/{{project_id}}
+Authorization: Bearer {{token}}
+
+########### UPDATE PROJECT ###################################
+PATCH http://localhost:3000/api/project/{{project_id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Proyecto Remodelación",
+  "email": "nuevo.email@ejemplo.com",
+  "address": {
+    "street": "Calle Nueva",
+    "number": 45,
+    "postal": 28015,
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+########### DELETE PROJECT ###################################
+DELETE http://localhost:3000/api/project/{{project_id}}
+Authorization: Bearer {{token}}
+
+########### CREATE DELIVERY NOTE #############################
+POST http://localhost:3000/api/deliverynote
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Ricardo",
+  "date": "2024-06-07T07:28:09.444Z",
+  "company": {
+    "name": "SERVITOP, SL",
+    "cif": "B12345678",
+    "address": {
+      "street": "Carlos V",
+      "number": 22,
+      "postal": 28936,
+      "city": "Móstoles",
+      "province": "Madrid"
+    }
+  },
+  "address": {
+    "street": "Carlos V",
+    "number": 22,
+    "postal": 28936,
+    "city": "Móstoles",
+    "province": "Madrid"
+  },
+  "project": {{project_id_str}},
+  "clientId": {{client_id_str}},
+  "description": "my description",
+  "format": "hours",
+  "hours": 7,
+  "workers": [],
+  "photo": "uri"
+}

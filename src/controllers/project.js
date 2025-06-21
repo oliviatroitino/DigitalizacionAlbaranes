@@ -1,5 +1,5 @@
 const ProjectModel = require("../models/nosql/project");
-const ClientModel = require("../models/nosql/client");
+const {ClientModel} = require("../models/nosql/client");
 const { matchedData, body } = require("express-validator");
 const { handleHttpError } = require("../utils/handleError");
 const { tokenSign } = require("../utils/handleJwt");

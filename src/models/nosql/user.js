@@ -1,12 +1,18 @@
 const mongoose = require("mongoose");
 
-const addressSchema = {
+const AddressSchema = new mongoose.Schema({
     street: { type: String },
     number: { type: Number },
     postal: { type: Number },
     city: { type: String },
     province: { type: String }
-}
+}, {_id: false});
+
+const CompanySchema = new mongoose.Schema({
+    name: { type: String },
+    cif: { type: String },
+    address: AddressSchema
+}, {_id: false});
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -35,12 +41,11 @@ const UserSchema = new mongoose.Schema({
         enum: ["user", "admin"], 
         default: "user"
     },
-    address: addressSchema,
-    company: {
-        name: { type: String },
-        cif: { type: String },
-        address: addressSchema
-    }
+    address: AddressSchema,
+    company: CompanySchema
 });
 
-module.exports = mongoose.model("user", UserSchema);
+module.exports = {
+    AddressSchema, CompanySchema,
+    UserModel: mongoose.model("user", UserSchema)
+};

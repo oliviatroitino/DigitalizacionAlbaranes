@@ -7,6 +7,7 @@ const dbConnect = require('./src/config/mongo');
 const userRouter = require('./src/routes/user.js');
 const clientRouter = require('./src/routes/client.js');
 const projectRouter = require('./src/routes/project.js');
+const deliveryNoteRouter = require('./src/routes/delivery-note.js');
 
 app.use(cors())
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api/user', userRouter);
 app.use('/api/client', clientRouter);
 app.use('/api/project', projectRouter);
+app.use('/api/deliverynote', deliveryNoteRouter);
 
 dbConnect();
 

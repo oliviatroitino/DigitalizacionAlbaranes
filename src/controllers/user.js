@@ -1,6 +1,6 @@
 const { matchedData } = require("express-validator");
 const { encrypt, compare } = require("../utils/handlePassword");
-const UserModel = require("../models/nosql/user");
+const { UserModel } = require("../models/nosql/user");
 const { handleHttpError } = require("../utils/handleError");
 const { tokenSign } = require("../utils/handleJwt.js");
 const { sendEmail } = require("../utils/handleEmail.js");

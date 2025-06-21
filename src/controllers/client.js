@@ -1,5 +1,5 @@
 require('dotenv').config();
-const ClientModel = require('../models/nosql/client');
+const { ClientModel } = require('../models/nosql/client');
 const { handleHttpError } = require('../utils/handleError.js');
 const { matchedData } = require('express-validator');
 

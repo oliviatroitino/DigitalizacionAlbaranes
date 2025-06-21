@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { AddressSchema } = require("./user");
 
 const ClientSchema = mongoose.Schema(
     {
@@ -15,23 +16,7 @@ const ClientSchema = mongoose.Schema(
             type: String,
             required: true
         },
-        address: {
-            street: {
-                type: String
-            },
-            number: {
-                type: Number
-            },
-            postal: {
-                type: Number
-            },
-            city: {
-                type: String
-            },
-            province: {
-                type: String
-            }
-        },
+        address: AddressSchema,
         deleted: {
             type: Boolean,
             default: false,
@@ -40,4 +25,7 @@ const ClientSchema = mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("client", ClientSchema);
+module.exports = {
+    ClientSchema,
+    ClientModel: mongoose.model("client", ClientSchema)
+}
