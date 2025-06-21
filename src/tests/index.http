@@ -3,7 +3,7 @@
 @email = "sakir73509@nab4.com"
 @password = "HolaMundo123"
 @emailCode = 492354
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODU1NTI0MDgwNzE4ZWMwYTY3NTQxYWMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MDUxNzczOCwiZXhwIjoxNzUwNTI0OTM4fQ.HSSKwWsTxjuLAvHGrjgtyS5IeNAuSOfen_nWItzIX3g
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODU1NTI0MDgwNzE4ZWMwYTY3NTQxYWMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MDUyNjAyOSwiZXhwIjoxNzUwNTMzMjI5fQ.N11CzPfMScr6co-quWF-t_sHZBWg7iLowC1449VXYMg
 @user_id = "6855524080718ec0a67541ac"
 @client_id = 685568a26a2f463741df04e3
 @client_id_str = "685568a26a2f463741df04e3"
@@ -228,3 +228,16 @@ Authorization: Bearer {{token}}
 ########### GET DELIVERY NOTE BY ID ##########################
 GET http://localhost:3000/api/deliverynote/{{deliverynote_id}}
 Authorization: Bearer {{token}}
+
+########### UPDATE DELIVERY NOTE #############################
+PATCH http://localhost:3000/api/deliverynote/{{deliverynote_id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Nuevo nombre del albarán",
+  "description": "Descripción actualizada",
+  "hours": 10,
+  "workers": ["Juan", "María"],
+  "photo": "nuevo.jpg"
+}

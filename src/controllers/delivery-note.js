@@ -105,5 +105,26 @@ const getDeliveryNoteById = async (req, res) => {
     }
 };
 
+const updateDeliveryNote = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
 
-module.exports = { createDeliveryNote, getDeliveryNotes, getDeliveryNoteById };
+        const deliveryNote = await DeliveryNoteModel.findOne({ _id: id, deleted: false });
+
+        if (!deliveryNote) {
+        return handleHttpError(res, "DELIVERYNOTE_NOT_FOUND", 404);
+        }
+
+        Object.assign(deliveryNote, data);
+
+        await deliveryNote.save();
+
+        res.send({ message: "Albarán actualizado correctamente.", data: deliveryNote });
+    } catch (error) {
+        console.error("ERROR_UPDATE_DELIVERYNOTE:", error);
+        handleHttpError(res, "ERROR_UPDATE_DELIVERYNOTE", 500);
+    }
+};
+
+module.exports = { createDeliveryNote, getDeliveryNotes, getDeliveryNoteById, updateDeliveryNote };

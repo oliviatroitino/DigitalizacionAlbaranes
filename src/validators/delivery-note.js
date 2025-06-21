@@ -55,4 +55,35 @@ const validatorGetDeliveryNoteById = [
     (req, res, next) => validateResults(req, res, next),
 ];
 
-module.exports = { validatorCreateDeliveryNote, validatorGetDeliveryNotes, validatorGetDeliveryNoteById };
+const validatorUpdateDeliveryNote = [
+    check("id").exists().notEmpty().isMongoId().withMessage("ID inválido"),
+
+    check("name").optional().isString(),
+    check("date").optional().isISO8601(),
+    check("company.name").optional().isString(),
+    check("company.cif").optional().isString(),
+    check("company.address.street").optional().isString(),
+    check("company.address.number").optional().isNumeric(),
+    check("company.address.postal").optional().isNumeric(),
+    check("company.address.city").optional().isString(),
+    check("company.address.province").optional().isString(),
+
+    check("address.street").optional().isString(),
+    check("address.number").optional().isNumeric(),
+    check("address.postal").optional().isNumeric(),
+    check("address.city").optional().isString(),
+    check("address.province").optional().isString(),
+
+    check("project").optional().isMongoId(),
+    check("clientId").optional().isMongoId(),
+
+    check("description").optional().isString(),
+    check("format").optional().isString(),
+    check("hours").optional().isNumeric(),
+    check("workers").optional().isArray(),
+    check("photo").optional().isString(),
+
+    (req, res, next) => validateResults(req, res, next),
+];
+
+module.exports = { validatorCreateDeliveryNote, validatorGetDeliveryNotes, validatorGetDeliveryNoteById, validatorUpdateDeliveryNote };
