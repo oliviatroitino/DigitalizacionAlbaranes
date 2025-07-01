@@ -95,9 +95,51 @@ const deleteClient = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(`ERROR in deleteClient: ${error}`);
+        console.error(`ERROR_DELETE_CLIENT: ${error}`);
         handleHttpError(res, 'ERROR_DELETE_CLIENT', 403);
     }
 }
 
-module.exports = { createClient, getClients, getClientById, updateClient, deleteClient };
+const getDeletedClients = async (req, res) => {
+    try {
+        const user = req.user;
+
+        const deletedClients = await ClientModel.find({
+            userId: user._id,
+            deleted: true
+        });
+
+        res.send(deletedClients);
+    } catch (error) {
+        console.error(`ERROR_GET_DELETED_CLIENTS: ${error}`);
+        handleHttpError(res, "ERROR_GET_DELETED_CLIENTS", 500);
+    }
+};
+
+const restoreClient = async (req, res) => {
+    try {
+        const user = req.user;
+        const { id } = req.params;
+
+        const client = await ClientModel.findOne({
+            _id: id,
+            userId: user._id,
+            deleted: true
+        });
+
+        if (!client) {
+            return handleHttpError(res, "CLIENT_NOT_FOUND_OR_NOT_DELETED", 404);
+        }
+
+        client.deleted = false;
+        await client.save();
+
+        res.send({ message: "Cliente restaurado correctamente.", client });
+    } catch (error) {
+        console.error("ERROR_RESTORE_CLIENT:", error);
+        handleHttpError(res, "ERROR_RESTORE_CLIENT", 500);
+    }
+};
+
+
+module.exports = { createClient, getClients, getClientById, updateClient, deleteClient, getDeletedClients, restoreClient };

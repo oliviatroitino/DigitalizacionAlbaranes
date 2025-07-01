@@ -125,6 +125,14 @@ Authorization: Bearer {{token}}
 DELETE http://localhost:3000/api/client/{{client_id}}?soft=false
 Authorization: Bearer {{token}}
 
+########## GET DELETED CLIENTS ###############################
+GET http://localhost:3000/api/client/deleted
+Authorization: Bearer {{token}}
+
+########## RESTORE DELETED CLIENTS ###########################
+PATCH http://localhost:3000/api/client/restore/{{client_id}}
+Authorization: Bearer {{token}}
+
 ########## CREATE PROJECT ####################################
 POST http://localhost:3000/api/project
 Content-Type: application/json

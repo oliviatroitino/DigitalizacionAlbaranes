@@ -37,4 +37,12 @@ const validatorUpdateClient = [
     }
 ];
 
-module.exports = { validatorCreateClient, validatorGetId, validatorUpdateClient };
+const validatorRestoreClient = [
+  param("id")
+    .exists().withMessage("ID es obligatorio")
+    .notEmpty().withMessage("ID no puede estar vacío")
+    .isMongoId().withMessage("ID debe ser un Mongo ID válido"),
+  (req, res, next) => validateResults(req, res, next),
+];
+
+module.exports = { validatorCreateClient, validatorGetId, validatorUpdateClient, validatorRestoreClient };
