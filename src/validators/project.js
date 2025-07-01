@@ -58,7 +58,7 @@ const validatorUpdateProject = [
 ];
 
 const validatorRestoreProject = [
-  param("id")
+  check("id")
     .exists().withMessage("ID es obligatorio")
     .notEmpty().withMessage("ID no puede estar vacío")
     .isMongoId().withMessage("ID debe ser un Mongo ID válido"),
