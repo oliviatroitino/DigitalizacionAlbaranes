@@ -57,9 +57,20 @@ const validatorUpdateProject = [
     (req, res, next) => validateResults(req, res, next)
 ];
 
+const validatorRestoreProject = [
+  param("id")
+    .exists().withMessage("ID es obligatorio")
+    .notEmpty().withMessage("ID no puede estar vacío")
+    .isMongoId().withMessage("ID debe ser un Mongo ID válido"),
+  (req, res, next) => validateResults(req, res, next),
+];
+
+
+
 module.exports = { 
   validatorCreateProject, 
   validatorGetProject, 
   validatorGetProjects, 
   validatorUpdateProject,
+  validatorRestoreProject
 };

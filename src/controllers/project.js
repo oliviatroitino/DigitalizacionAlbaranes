@@ -106,4 +106,45 @@ const deleteProject = async (req, res) => {
     }
 }
 
-module.exports = { createProject, getProjects, getProject, updateProject, deleteProject };
+const getDeletedProjects = async (req, res) => {
+    try {
+        const user = req.user;
+
+        const deletedProjects = await ProjectModel.find({
+            userId: user._id,
+            deleted: true
+        });
+
+        res.send(deletedProjects);
+    } catch (error) {
+        console.error("ERROR_GET_DELETED_PROJECTS:", error);
+        handleHttpError(res, "ERROR_GET_DELETED_PROJECTS", 500);
+    }
+};
+
+const restoreProject = async (req, res) => {
+    try {
+        const user = req.user;
+        const { id } = req.params;
+
+        const project = await ProjectModel.findOne({
+            _id: id,
+            userId: user._id,
+            deleted: true
+        });
+
+        if (!project) {
+            return handleHttpError(res, "PROJECT_NOT_FOUND_OR_NOT_DELETED", 404);
+        }
+
+        project.deleted = false;
+        await project.save();
+
+        res.send({ message: "Proyecto restaurado correctamente.", project });
+    } catch (error) {
+        console.error("ERROR_RESTORE_PROJECT:", error);
+        handleHttpError(res, "ERROR_RESTORE_PROJECT", 500);
+    }
+};
+
+module.exports = { createProject, getProjects, getProject, updateProject, deleteProject, getDeletedProjects, restoreProject };
