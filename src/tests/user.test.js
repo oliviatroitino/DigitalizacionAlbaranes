@@ -60,7 +60,8 @@ describe('User API tests', () => {
                 .expect(409)
 
             expect(response.text).toBe('ERROR_USER_EXISTS')
-        });})
+        });
+    });
 
 
     describe('Validation', () => {
