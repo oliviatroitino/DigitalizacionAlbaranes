@@ -76,7 +76,7 @@ const getDeliveryNotes = async (req, res) => {
             filter.clientId = clientId;
         }
 
-        const deliveryNotes = await DeliveryNoteModel.find(filter);
+        const deliveryNotes = await DeliveryNoteModel.find(filter).populate("project").populate("clientId").exec();
 
         res.send(deliveryNotes);
     } catch (error) {
@@ -92,7 +92,7 @@ const getDeliveryNoteById = async (req, res) => {
         const deliveryNote = await DeliveryNoteModel.findOne({
             _id: id,
             deleted: false
-        });
+        }).populate("project").populate("clientId").exec();
 
         if (!deliveryNote) {
             return handleHttpError(res, "DELIVERYNOTE_NOT_FOUND", 404);
