@@ -6,10 +6,10 @@ const { createClient, getClients, getClientById, updateClient, deleteClient, get
 
 router.post("/", authMiddleware, validatorCreateClient, createClient);
 router.get("/", authMiddleware, getClients);
+router.get("/deleted", authMiddleware, getDeletedClients);
 router.get("/:id", authMiddleware, validatorGetId, getClientById);
 router.patch("/:id", authMiddleware, validatorUpdateClient, updateClient);
 router.delete("/:id", authMiddleware, validatorGetId, deleteClient);
-router.get("/deleted", authMiddleware, getDeletedClients);
 router.patch("/restore/:id", authMiddleware, validatorRestoreClient, restoreClient);
 
 module.exports = router;
