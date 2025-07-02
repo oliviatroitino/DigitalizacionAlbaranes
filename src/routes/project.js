@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/session");
+//// Validador
 const { validatorCreateProject, validatorGetProjects, validatorGetProject, validatorUpdateProject, validatorRestoreProject } = require("../validators/project");
+//// Controller
 const { createProject, getProjects, getProject, updateProject, deleteProject, getDeletedProjects, restoreProject } = require("../controllers/project");
 
 router.post("/", authMiddleware, validatorCreateProject, createProject);

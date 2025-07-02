@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/session");
-const { createDeliveryNote, getDeliveryNotes, getDeliveryNoteById, updateDeliveryNote, deleteDeliveryNote, downloadDeliveryNotePDF, signDeliveryNote } = require("../controllers/delivery-note");
-const { validatorCreateDeliveryNote, validatorGetDeliveryNotes, validatorGetDeliveryNoteById, validatorUpdateDeliveryNote, validatorDeleteDeliveryNote } = require("../validators/delivery-note");
 const { uploadMiddlewareMemory } = require("../utils/handleStorage");
+//// Validador
+const { validatorCreateDeliveryNote, validatorGetDeliveryNotes, validatorGetDeliveryNoteById, validatorUpdateDeliveryNote, validatorDeleteDeliveryNote } = require("../validators/delivery-note");
+//// Controller
+const { createDeliveryNote, getDeliveryNotes, getDeliveryNoteById, updateDeliveryNote, deleteDeliveryNote, downloadDeliveryNotePDF, signDeliveryNote } = require("../controllers/delivery-note");
 
 router.post("/", authMiddleware, validatorCreateDeliveryNote, createDeliveryNote);
 router.get("/", authMiddleware, validatorGetDeliveryNotes, getDeliveryNotes);
