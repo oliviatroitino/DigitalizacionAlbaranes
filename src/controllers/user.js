@@ -3,7 +3,7 @@ const { encrypt, compare } = require("../utils/handlePassword");
 const { UserModel } = require("../models/nosql/user");
 const { handleHttpError } = require("../utils/handleError");
 const { tokenSign } = require("../utils/handleJwt.js");
-const { sendEmail } = require("../utils/handleEmail.js");
+const { sendEmail, generateEmailCode } = require("../utils/handleEmail.js");
 
 const registerUser = async (req, res) => {
     try {
@@ -19,7 +19,7 @@ const registerUser = async (req, res) => {
         }
 
         body.status = false;
-        body.emailCode = Math.floor(100000 + Math.random() * 900000).toString();
+        body.emailCode = generateEmailCode();
         body.password = hashedPassword;
         body.intentos = 0;
         body.role = "user";
@@ -53,7 +53,7 @@ const verifyEmail = async (req, res) => {
         const user = await UserModel.findOne({ email: body.email });
 
         // comparar body.emailCode con user.emailCode
-        if (!user) return handleHttpError(res, "ERROR_USER_NOT_FOUND", 401);
+        if (!user) return handleHttpError(res, "ERROR_USER_NOT_FOUND", 404);
 
         if (body.emailCode == user.emailCode){
             user.status = 1;
