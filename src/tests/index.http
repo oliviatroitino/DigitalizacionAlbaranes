@@ -9,7 +9,7 @@
 @client_id_str = "685568a26a2f463741df04e3"
 @project_id = 6856cc9152f3b739e9c5db26
 @project_id_str = "6856cc9152f3b739e9c5db26"
-@deliverynote_id = 6856cc9a52f3b739e9c5db2b
+@deliverynote_id = 6864e0078d3050a25990a0ce
 
 ######### REGISTER ########################################
 POST http://localhost:3000/api/user/register
@@ -256,4 +256,8 @@ Authorization: Bearer {{token}}
 
 ########### DELETE DELIVERY NOTE (HARD) ######################
 DELETE http://localhost:3000/api/deliverynote/{{deliverynote_id}}?soft=false
+Authorization: Bearer {{token}}
+
+########### GET DELIVERY NOTE PDF ############################
+GET http://localhost:3000/api/deliverynote/{{deliverynote_id}}/pdf
 Authorization: Bearer {{token}}

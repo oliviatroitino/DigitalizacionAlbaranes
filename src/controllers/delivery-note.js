@@ -5,6 +5,7 @@ const DeliveryNoteModel = require('../models/nosql/delivery-note');
 const ProjectModel = require('../models/nosql/project.js');
 const { handleHttpError } = require('../utils/handleError.js');
 const { matchedData } = require('express-validator');
+const { generateDeliveryNotePDF } = require('../utils/handlePDF.js');
 
 const createDeliveryNote = async (req, res) => {
     try {
@@ -152,4 +153,33 @@ const deleteDeliveryNote = async (req, res) => {
     }
 };
 
-module.exports = { createDeliveryNote, getDeliveryNotes, getDeliveryNoteById, updateDeliveryNote, deleteDeliveryNote };
+const getDeliveryNotePDF = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deliveryNote = await DeliveryNoteModel.findOne({
+            _id: id,
+            deleted: false
+        }).populate("project").populate("clientId").exec();
+
+        if(!deliveryNote) return handleHttpError(res, "DELIVERYNOTE_NOT_FOUND", 404);
+
+        const pdfStream = generateDeliveryNotePDF(deliveryNote);
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename=albaran_${id}.pdf`);
+
+        pdfStream.pipe(res);
+    } catch (error) {
+        console.error("ERROR_GET_DELIVERYNOTE_PDF", error);
+        handleHttpError(res, "ERROR_GET_DELIVERYNOTE_PDF", 500);
+    }
+};
+
+module.exports = { createDeliveryNote, 
+    getDeliveryNotes, 
+    getDeliveryNoteById, 
+    updateDeliveryNote, 
+    deleteDeliveryNote,
+    getDeliveryNotePDF 
+};
