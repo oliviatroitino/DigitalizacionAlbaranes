@@ -158,6 +158,7 @@ const deleteDeliveryNote = async (req, res) => {
 const downloadDeliveryNotePDF = async (req, res) => {
     try {
         const { id } = req.params;
+        const user = req.user;
 
         const deliveryNote = await DeliveryNoteModel.findOne({
             _id: id,
