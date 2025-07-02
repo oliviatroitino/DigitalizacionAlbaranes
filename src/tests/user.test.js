@@ -22,216 +22,279 @@ describe('User API tests', () => {
         password: 'TestPass123'
     };
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         await UserModel.deleteMany({});
     })
 
-    // registro
-    it('should register a user', async () => {
-        const response = await request(app)
-            .post('/api/user/register')
-            .send(initialUser)
-            .set('Accept', 'application/json')
-            .expect(200)
+    describe('Register', () => {    
+        // registro
+        it('should register a user', async () => {
+            const testUser = {
+                name: 'TestUser',
+                email: 'testuser@example.com',
+                password: 'TestPass123'
+            }
+            
+            const response = await request(app)
+                .post('/api/user/register')
+                .send(testUser)
+                .set('Accept', 'application/json')
+                .expect(200)
 
-        const user = response.body.user;
-        const token = response.body.token;
-        expect(user.email).toEqual(initialUser.email);
-        expect(user.role).toEqual('user');
-        expect(user.status).toEqual(0);
-        expect(user.password).toBeUndefined();
-        expect(token).toBeDefined();
-    });
+            const user = response.body.user;
+            const token = response.body.token;
+            expect(user.email).toEqual(testUser.email);
+            expect(user.role).toEqual('user');
+            expect(user.status).toEqual(0);
+            expect(user.password).toBeUndefined();
+            expect(token).toBeDefined();
+        });
 
-    it('should not register a user (existing user)', async () => {
-        const existingUser = {
-            name: 'Ya Existe',
-            email: 'existe@example.com',
-            password: await encrypt('password123'),
-            status: 0,
-            role: 'user'
-        };
+        it('should not register a user (existing user)', async () => {
+            const existingUser = {
+                name: 'Ya Existe',
+                email: 'existe@example.com',
+                password: await encrypt('password123'),
+                status: 0,
+                role: 'user'
+            };
 
-        await UserModel.create(existingUser);
-        
-        const response = await request(app)
-            .post('/api/user/register')
-            .send(existingUser)
-            .set('Accept', 'application/json')
-            .expect(409)
+            await UserModel.create(existingUser);
+            
+            const response = await request(app)
+                .post('/api/user/register')
+                .send(existingUser)
+                .set('Accept', 'application/json')
+                .expect(409)
 
-        expect(response.text).toBe('ERROR_USER_EXISTS')
-    });
+            expect(response.text).toBe('ERROR_USER_EXISTS')
+        });})
 
-    // validacion
-    it('should validate a user', async () => {
-        const response = await request(app)
-            .put('/api/user/validation')
-            .send({
-                email: initialUser.email,
-                emailCode: '123456'
-            })
-            .set('Accept', 'application/json')
-            .expect(200)
 
-        const user = response.body.user;
-        const token = response.body.token;
-        expect(user.status).toEqual(1);
-        expect(token).toBeDefined();
-    });
+    describe('Validation', () => {
+        it('should validate a user', async () => {
+            const testUser = {
+                name: 'TestUser',
+                email: 'testuser@example.com',
+                password: await encrypt('TestPass123'),
+                emailCode: '123456',
+                status: 0,
+                role: 'user'
+            }
+            await UserModel.create(testUser);
 
-    it('should not validate a user (user not found)', async () => {
-        const response = await request(app)
-            .put('/api/user/validation')
-            .send({
-                email: 'wrongemail@gmail.com',
-                emailCode: '654321'
-            })
-            .set('Accept', 'application/json')
-            .expect(404)
+            const response = await request(app)
+                .put('/api/user/validation')
+                .send({
+                    email: testUser.email,
+                    emailCode: testUser.emailCode
+                })
+                .set('Accept', 'application/json')
+                .expect(200)
 
-        expect(response.text).toBe("ERROR_USER_NOT_FOUND")
-    });
+            const user = response.body.user;
+            const token = response.body.token;
+            expect(user.status).toEqual(1);
+            expect(token).toBeDefined();
+        });
 
-    it('should not validate a user (email code incorrect)', async () => {
-        const response = await request(app)
-            .put('/api/user/validation')
-            .send({
-                email: initialUser.email,
-                emailCode: '654321'
-            })
-            .set('Accept', 'application/json')
-            .expect(401)
+        it('should not validate a user (user not found)', async () => {
+            const testUser = {
+                name: 'TestUser',
+                email: 'testuser@example.com',
+                password: await encrypt('TestPass123'),
+                emailCode: '123456',
+                status: 0,
+                role: 'user'
+            }
+            await UserModel.create(testUser);
+            
+            const response = await request(app)
+                .put('/api/user/validation')
+                .send({
+                    email: 'wrongemail@gmail.com',
+                    emailCode: '123456'
+                })
+                .set('Accept', 'application/json')
+                .expect(404)
 
-        expect(response.text).toBe("ERROR_EMAILCODE_INCORRECT")
-    });
+            expect(response.text).toBe("ERROR_USER_NOT_FOUND")
+        });
+
+        it('should not validate a user (email code incorrect)', async () => {
+            const testUser = {
+                name: 'TestUser',
+                email: 'testuser@example.com',
+                password: await encrypt('TestPass123'),
+                emailCode: '123456',
+                status: 0,
+                role: 'user'
+            }
+            await UserModel.create(testUser);
+            
+            const response = await request(app)
+                .put('/api/user/validation')
+                .send({
+                    email: testUser.email,
+                    emailCode: '654321'
+                })
+                .set('Accept', 'application/json')
+                .expect(401)
+
+            expect(response.text).toBe("ERROR_EMAILCODE_INCORRECT")
+        });
+    })
 
     // login
-    it('should log in a user', async () => {
-        const response = await request(app)
-            .post('/api/user/login')
-            .send({
-                email: initialUser.email,
-                password: initialUser.password
-            })
-            .set('Accept', 'application/json')
-            .expect(200);
-
-        const user = response.body.user;
-        const token = response.body.token;
-        expect(user.email).toEqual(initialUser.email);
-        expect(token).toBeDefined();
-    })
-
-    it('should not log in a user (wrong password)', async () => {
-        const response = await request(app)
-            .post('/api/user/login')
-            .send({
-                email: initialUser.email,
-                password: 'wrongpassword'
-            })
-            .set('Accept', 'application/json')
-            .expect(401);
-
-        expect(response.text).toBe("ERROR_INCORRECT_PASSWORD")
-    })
-
-    it('should not log in a user (non existent user)', async () => {
-        const response = await request(app)
-            .post('/api/user/login')
-            .send({
-                email: 'wrongemail@gmail.com',
-                password: 'wrongpassword'
-            })
-            .set('Accept', 'application/json')
-            .expect(404);
-
-        expect(response.text).toBe("ERROR_USER_NOT_FOUND")
-    })
-
-    it('should not log in a user (non validated user)', async() => {
-        const unvalidatedUser = {
-            name: 'NoValido',
-            email: 'novalido@example.com',
-            password: await encrypt('password123'),
-            status: 0, // no validado
-            role: 'user'
-        };
-
-        await UserModel.create(unvalidatedUser);
-
-        const response = await request(app)
-            .post('/api/user/login')
-            .send({
-                email: unvalidatedUser.email,
-                password: 'password123'
-            })
-            .set('Accept', 'application/json')
-            .expect(401);
-            
-            expect(response.text).toBe('USER_NOT_VALIDATED');
-    })
-
-    // update user data
-    it('should update user data', async() => {
-        const newUser = await UserModel.create({
-            name: 'OriginalName',
-            surnames: 'OriginalSurname',
-            email: 'updateuser@example.com',
-            password: await encrypt('password123'),
-            status: 1,
-            role: 'user'
-        });
-        const token = await tokenSign(newUser);
-
-        const data = {
-            "name": "Ricardo",
-            "surnames": "Martínez Gómez",
-            "nif": "12345678Z",
-            "address": {
-                "street": "Calle",
-                "number": 123,
-                "postal": 28013,
-                "city": "Madrid",
-                "province": "Madrid"
+    describe('Login', () => {
+        it('should log in a user', async () => {
+            const testUser = {
+                name: 'TestUser',
+                email: 'testuser@example.com',
+                password: await encrypt('TestPass123'),
+                emailCode: '123456',
+                status: 1,
+                role: 'user'
             }
-        }
+            await UserModel.create(testUser);
 
-        const response = await request(app)
-            .patch(`/api/user/`)
-            .set('Authorization', `Bearer ${token}`)
-            .send(data)
-            .expect(200);
+            const response = await request(app)
+                .post('/api/user/login')
+                .send({
+                    email: testUser.email,
+                    password: 'TestPass123'
+                })
+                .set('Accept', 'application/json')
+                .expect(200);
 
-        const user = response.body.user;
-        expect(user.email).toEqual(newUser.email);
-        expect(token).toBeDefined();
+            const user = response.body.user;
+            const token = response.body.token;
+            expect(user.email).toEqual(testUser.email);
+            expect(token).toBeDefined();
+        })
 
+        it('should not log in a user (wrong password)', async () => {
+            const testUser = {
+                name: 'TestUser',
+                email: 'testuser@example.com',
+                password: await encrypt('TestPass123'),
+                emailCode: '123456',
+                status: 1,
+                role: 'user'
+            }
+            await UserModel.create(testUser);
+            
+            const response = await request(app)
+                .post('/api/user/login')
+                .send({
+                    email: testUser.email,
+                    password: 'wrongpassword'
+                })
+                .set('Accept', 'application/json')
+                .expect(401);
+
+            expect(response.text).toBe("ERROR_INCORRECT_PASSWORD")
+        })
+
+        it('should not log in a user (non existent user)', async () => {
+            const response = await request(app)
+                .post('/api/user/login')
+                .send({
+                    email: 'wrongemail@gmail.com',
+                    password: 'wrongpassword'
+                })
+                .set('Accept', 'application/json')
+                .expect(404);
+
+            expect(response.text).toBe("ERROR_USER_NOT_FOUND")
+        })
+
+        it('should not log in a user (non validated user)', async() => {
+            const unvalidatedUser = {
+                name: 'NoValido',
+                email: 'novalido@example.com',
+                password: await encrypt('password123'),
+                status: 0, // no validado
+                role: 'user'
+            };
+
+            await UserModel.create(unvalidatedUser);
+
+            const response = await request(app)
+                .post('/api/user/login')
+                .send({
+                    email: unvalidatedUser.email,
+                    password: 'password123'
+                })
+                .set('Accept', 'application/json')
+                .expect(401);
+                
+                expect(response.text).toBe('USER_NOT_VALIDATED');
+        })
     });
 
-    it('should not update user data', async() => {
-        const token = 'sjkhgskdgfh'
+    // update user data
+    describe('Update data', () => {    
+        it('should update user data', async() => {
+            const newUser = await UserModel.create({
+                name: 'OriginalName',
+                surnames: 'OriginalSurname',
+                email: 'updateuser@example.com',
+                password: await encrypt('password123'),
+                status: 1,
+                role: 'user'
+            });
+            const token = await tokenSign(newUser);
 
-        const data = {
-            "name": "Ricardo",
-            "surnames": "Martínez Gómez",
-            "nif": "12345678Z",
-            "address": {
-                "street": "Calle",
-                "number": 123,
-                "postal": 28013,
-                "city": "Madrid",
-                "province": "Madrid"
+            const data = {
+                "name": "Ricardo",
+                "surnames": "Martínez Gómez",
+                "nif": "12345678Z",
+                "address": {
+                    "street": "Calle",
+                    "number": 123,
+                    "postal": 28013,
+                    "city": "Madrid",
+                    "province": "Madrid"
+                }
             }
-        }
 
-        const response = await request(app)
-            .patch(`/api/user/`)
-            .set('Authorization', `Bearer ${token}`)
-            .send(data)
-            .expect(401);
+            const response = await request(app)
+                .patch(`/api/user/`)
+                .set('Authorization', `Bearer ${token}`)
+                .send(data)
+                .expect(200);
 
-        expect(response.text).toBe('NOT_SESSION')
+            const user = response.body.user;
+            expect(user.email).toEqual(newUser.email);
+            expect(token).toBeDefined();
+
+        });
+
+        it('should not update user data', async() => {
+            const token = 'sjkhgskdgfh'
+
+            const data = {
+                "name": "Ricardo",
+                "surnames": "Martínez Gómez",
+                "nif": "12345678Z",
+                "address": {
+                    "street": "Calle",
+                    "number": 123,
+                    "postal": 28013,
+                    "city": "Madrid",
+                    "province": "Madrid"
+                }
+            }
+
+            const response = await request(app)
+                .patch(`/api/user/`)
+                .set('Authorization', `Bearer ${token}`)
+                .send(data)
+                .expect(401);
+
+            expect(response.text).toBe('NOT_SESSION')
+        });
     });
 
     afterAll(async () => {
