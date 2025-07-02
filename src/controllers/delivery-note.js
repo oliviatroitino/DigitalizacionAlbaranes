@@ -6,6 +6,7 @@ const ProjectModel = require('../models/nosql/project.js');
 const { handleHttpError } = require('../utils/handleError.js');
 const { matchedData } = require('express-validator');
 const { generateDeliveryNotePDF } = require('../utils/handlePDF.js');
+const user = require('../models/nosql/user.js');
 
 const createDeliveryNote = async (req, res) => {
     try {
@@ -153,16 +154,23 @@ const deleteDeliveryNote = async (req, res) => {
     }
 };
 
-const getDeliveryNotePDF = async (req, res) => {
+const downloadDeliveryNotePDF = async (req, res) => {
     try {
         const { id } = req.params;
 
         const deliveryNote = await DeliveryNoteModel.findOne({
             _id: id,
             deleted: false
-        }).populate("project").populate("clientId").exec();
+        }).populate("project").populate("clientId").lean();
 
         if(!deliveryNote) return handleHttpError(res, "DELIVERYNOTE_NOT_FOUND", 404);
+
+        // verificar si cliente es propietario de este albaran
+        const client = await ClientModel.findById(deliveryNote.clientId);
+        if (!client) return handleHttpError(res, "CLIENT_NOT_FOUND", 404);
+        if(client.userId.toString() !== user._id.toString()){
+            return handleHttpError(res, "ACCESS_DENIED", 403)
+        };
 
         const pdfStream = generateDeliveryNotePDF(deliveryNote);
 
@@ -181,5 +189,5 @@ module.exports = { createDeliveryNote,
     getDeliveryNoteById, 
     updateDeliveryNote, 
     deleteDeliveryNote,
-    getDeliveryNotePDF 
+    downloadDeliveryNotePDF 
 };
