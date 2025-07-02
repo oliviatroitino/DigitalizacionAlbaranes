@@ -14,14 +14,7 @@ const createDeliveryNote = async (req, res) => {
         const user = req.user;
         const data = matchedData(req);
 
-        // buscar project
-
         const projectId = new mongoose.Types.ObjectId(data.project);
-
-        // console.log("Buscando proyecto con:", {
-        //     _id: projectId,
-        //     deleted: false
-        // });
 
         const project = await ProjectModel.findOne({
             _id: data.project,
@@ -31,14 +24,6 @@ const createDeliveryNote = async (req, res) => {
         if(!project){
             return handleHttpError(res, "PROJECT_NOT_FOUND", 404);
         }
-
-        // buscar cliente
-
-        // console.log("Buscando cliente con:", {
-        //     _id: data.clientId,
-        //     userId: user._id,
-        //     deleted: false
-        // });
 
         const client = await ClientModel.findOne({
             _id: project.clientId,
@@ -50,7 +35,6 @@ const createDeliveryNote = async (req, res) => {
             return handleHttpError(res, "CLIENT_NOT_FOUND", 404);
         }
 
-        // crear albaran
         const newDeliveryNote = await DeliveryNoteModel.create({
             ...data,
             client,
@@ -175,7 +159,7 @@ const downloadDeliveryNotePDF = async (req, res) => {
         };
 
         if(!deliveryNote.signature) return handleHttpError(res, "DELIVERY_NOTE_NOT_SIGNED");
-        const pdfStream = generateDeliveryNotePDF(deliveryNote);
+        const pdfStream = await generateDeliveryNotePDF(deliveryNote);
 
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `attachment; filename=albaran_${id}.pdf`);
