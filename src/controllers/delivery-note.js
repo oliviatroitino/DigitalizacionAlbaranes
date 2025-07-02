@@ -43,7 +43,7 @@ const createDeliveryNote = async (req, res) => {
 
         res.send({message: "Albaran creado correctamente.", data: newDeliveryNote});
     } catch (error) {
-        console.error("ERROR_CREATE_DELIVERYNOTE: ", error);
+        console.error(`ERROR_CREATE_DELIVERYNOTE: ${error}`);
         handleHttpError(res, "ERROR_CREATE_DELIVERYNOTE", 500);
     }
 };
@@ -67,7 +67,7 @@ const getDeliveryNotes = async (req, res) => {
 
         res.send(deliveryNotes);
     } catch (error) {
-        console.error("ERROR_GET_DELIVERYNOTES:", error);
+        console.error(`ERROR_GET_DELIVERYNOTES: ${error}`);
         handleHttpError(res, "ERROR_GET_DELIVERYNOTES", 500);
     }
 };
@@ -87,7 +87,7 @@ const getDeliveryNoteById = async (req, res) => {
 
         res.send(deliveryNote);
     } catch (error) {
-        console.error("ERROR_GET_DELIVERYNOTE_BY_ID:", error);
+        console.error(`ERROR_GET_DELIVERYNOTE_BY_ID: ${error}`);
         handleHttpError(res, "ERROR_GET_DELIVERYNOTE_BY_ID", 500);
     }
 };
@@ -109,7 +109,7 @@ const updateDeliveryNote = async (req, res) => {
 
         res.send({ message: "Albarán actualizado correctamente.", data: deliveryNote });
     } catch (error) {
-        console.error("ERROR_UPDATE_DELIVERYNOTE:", error);
+        console.error(`ERROR_UPDATE_DELIVERYNOTE: ${error}`);
         handleHttpError(res, "ERROR_UPDATE_DELIVERYNOTE", 500);
     }
 };
@@ -134,7 +134,7 @@ const deleteDeliveryNote = async (req, res) => {
             return res.send({ message: "Albarán eliminado permanentemente (hard delete)." });
         }
     } catch (error) {
-        console.error("ERROR_DELETE_DELIVERYNOTE:", error);
+        console.error(`ERROR_DELETE_DELIVERYNOTE: ${error}`);
         handleHttpError(res, "ERROR_DELETE_DELIVERYNOTE", 500);
     }
 };
@@ -166,7 +166,7 @@ const downloadDeliveryNotePDF = async (req, res) => {
 
         pdfStream.pipe(res);
     } catch (error) {
-        console.error("ERROR_GET_DELIVERYNOTE_PDF", error);
+        console.error(`ERROR_GET_DELIVERYNOTE_PDF: ${error}`);
         handleHttpError(res, "ERROR_GET_DELIVERYNOTE_PDF", 500);
     }
 };
@@ -198,7 +198,7 @@ const signDeliveryNote = async (req, res) => {
             url: url
         });
     } catch (error) {
-        console.error("ERROR_SIGN_DELIVERYNOTE", error);
+        console.error(`ERROR_SIGN_DELIVERYNOTE: ${error}`);
         handleHttpError(res, "ERROR_SIGN_DELIVERYNOTE", 500);
     }
 }

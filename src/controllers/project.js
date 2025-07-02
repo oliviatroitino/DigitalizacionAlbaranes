@@ -21,9 +21,9 @@ const createProject = async (req, res) => {
 
         const newProject = await ProjectModel.create({...body, userId: user._id});
 
-        res.send({ data: newProject, message: "Project created correctly."});
+        res.send({ data: newProject, message: "Proyecto creado correctamente."});
     } catch (error) {
-        console.error("ERROR_CREATE_PROJECT:", error);
+        console.error(`ERROR_CREATE_PROJECT: ${error}`);
         handleHttpError(res, "ERROR_CREATE_PROJECT", 500);
     }
 };
@@ -33,10 +33,7 @@ const getProjects = async (req, res) => {
         const user = req.user;
         const { client } = req.query;
 
-        // console.log("Tipo de user._id:", typeof user._id);
-        // console.log("user._id:", user._id);
-
-        const filter = { userId: user._id }; // TODO deberian ser los no deleted pero no sale
+        const filter = { userId: user._id }; // deberian ser los no deleted pero no me funciona
 
         if (client) {
             filter.clientId = client;
@@ -46,7 +43,7 @@ const getProjects = async (req, res) => {
 
         res.send(projects);
     } catch(error) {
-        console.error("ERROR_GET_PROJECTS:", error);
+        console.error(`ERROR_GET_PROJECTS: ${error}`);
         handleHttpError(res, "ERROR_GET_PROJECTS", 500);
     }
 }
@@ -59,7 +56,7 @@ const getProject = async (req, res) => {
         
         res.send(project);
     } catch(error) {
-        console.error("ERROR_GET_PROJECT:", error);
+        console.error(`ERROR_GET_PROJECT: ${error}`);
         handleHttpError(res, "ERROR_GET_PROJECT", 500);
     }
 }
@@ -76,7 +73,7 @@ const updateProject = async (req, res) => {
 
         res.send({ data: updatedProject, message: "Proyecto actualizado correctamente." });
     } catch( error ){
-        console.error("ERROR_UPDATE_PROJECT:", error);
+        console.error(`ERROR_UPDATE_PROJECT: ${error}`);
         handleHttpError(res, "ERROR_UPDATE_PROJECT", 500);
     }
 }
@@ -117,7 +114,7 @@ const getDeletedProjects = async (req, res) => {
 
         res.send(deletedProjects);
     } catch (error) {
-        console.error("ERROR_GET_DELETED_PROJECTS:", error);
+        console.error(`ERROR_GET_DELETED_PROJECTS: ${error}`);
         handleHttpError(res, "ERROR_GET_DELETED_PROJECTS", 500);
     }
 };
@@ -142,7 +139,7 @@ const restoreProject = async (req, res) => {
 
         res.send({ message: "Proyecto restaurado correctamente.", project });
     } catch (error) {
-        console.error("ERROR_RESTORE_PROJECT:", error);
+        console.error(`ERROR_RESTORE_PROJECT: ${error}`);
         handleHttpError(res, "ERROR_RESTORE_PROJECT", 500);
     }
 };

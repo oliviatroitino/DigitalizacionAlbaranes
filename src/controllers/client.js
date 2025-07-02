@@ -12,7 +12,7 @@ const createClient = async (req, res) => {
         const result = await ClientModel.create({...body, userId: user._id});
         res.send({result, message: "Cliente creado correctamente."});
     } catch (error) {
-        console.error(`ERROR in createClient: ${error}`);
+        console.error(`ERROR_CREATE_CLIENT: ${error}`);
         handleHttpError(res, 'ERROR_CREATE_CLIENT', 403);
     }
 };
@@ -23,7 +23,7 @@ const getClients = async (req, res) => {
         const result = await ClientModel.find({userId: user.id, deleted: false})
         res.send(result);
     } catch (error) {
-        console.error(`ERROR in getClients: ${error}`);
+        console.error(`ERROR_GET_CLIENTS: ${error}`);
         handleHttpError(res, 'ERROR_GET_CLIENTS', 403);
     }
 }
@@ -45,7 +45,7 @@ const getClientById = async (req, res) => {
 
         res.send(client);
     } catch (error) {
-        console.error(`ERROR in getClient: ${error}`);
+        console.error(`ERROR_GET_CLIENTS: ${error}`);
         handleHttpError(res, 'ERROR_GET_CLIENTS', 403);
     }
 }
@@ -136,7 +136,7 @@ const restoreClient = async (req, res) => {
 
         res.send({ message: "Cliente restaurado correctamente.", client });
     } catch (error) {
-        console.error("ERROR_RESTORE_CLIENT:", error);
+        console.error(`ERROR_RESTORE_CLIENT: ${error}`);
         handleHttpError(res, "ERROR_RESTORE_CLIENT", 500);
     }
 };

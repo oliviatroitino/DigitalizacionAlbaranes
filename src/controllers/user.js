@@ -28,8 +28,8 @@ const registerUser = async (req, res) => {
 
         await sendEmail({
             to: newUser.email,
-            subject: "Validation code",
-            html: `<p>Your code is <b>${newUser.emailCode}</b></p>`,
+            subject: "Código de validación",
+            html: `<p>Su código es <b>${newUser.emailCode}</b></p>`,
             from: process.env.EMAIL
         });
 
@@ -38,9 +38,9 @@ const registerUser = async (req, res) => {
         newUser.set("password", undefined, {strict: false});
         // newUser.set("emailCode", undefined, {strict: false});
 
-        res.send({ user: newUser , token, message: "User registered, check email."});
-    } catch (err) {
-        console.log(`Registration error ${err}`);
+        res.send({ user: newUser , token, message: "Usuario registrado, revisar email."});
+    } catch (error) {
+        console.log(`ERROR_REGISTER_USER: ${error}`);
         handleHttpError(res, "ERROR_REGISTER_USER", 500);
     }
 }
@@ -65,42 +65,47 @@ const verifyEmail = async (req, res) => {
         // enviar email de confirmacion
         await sendEmail({
             to: user.email,
-            subject: "User validated successfully",
-            html: `<p>Thank you for registering.</p>`,
+            subject: "Usuario verificado correctamente",
+            html: `<p>Gracias por registrarse.</p>`,
             from: process.env.EMAIL
         });
 
         const token = await tokenSign(user);
 
         user.set("password", undefined, { strict: false });
-        res.send({ user: user , token, message: "User verified."});
-    } catch (err) {
-        console.log(`Verification error ${err}`);
-       return handleHttpError(res, "ERROR_VERIFYING_USER", 500);
+        res.send({ user: user , token, message: "Usuario verificado."});
+    } catch (error) {
+        console.log(`ERROR_VERIFYING_USER: ${error}`);
+        return handleHttpError(res, "ERROR_VERIFYING_USER", 500);
     }
 }
 
 const loginUser = async (req, res) => {
-    const body = matchedData(req);
-    const user = await UserModel.findOne({ email: body.email });
+    try {    
+        const body = matchedData(req);
+        const user = await UserModel.findOne({ email: body.email });
 
-    if(!user){
-        return handleHttpError(res, "ERROR_USER_NOT_FOUND", 404);
+        if(!user){
+            return handleHttpError(res, "ERROR_USER_NOT_FOUND", 404);
+        }
+
+        if (user.status !== 1) {
+            return handleHttpError(res, "USER_NOT_VALIDATED", 401);
+        }
+
+        const correctPassword = await compare(body.password, user.password);
+
+        if(!correctPassword){
+            return handleHttpError(res, "ERROR_INCORRECT_PASSWORD", 401);
+        }
+
+        const token = await tokenSign(user);
+        user.set("password", undefined, { strict: false });
+        res.send({ user, token, message: "User logged in." });
+    } catch (error) {
+        console.log(`ERROR_LOGGING_USER_IN: ${error}`);
+        return handleHttpError(res, "ERROR_LOGGING_USER_IN", 500);
     }
-
-    if (user.status !== 1) {
-        return handleHttpError(res, "USER_NOT_VALIDATED", 401);
-    }
-
-    const correctPassword = await compare(body.password, user.password);
-
-    if(!correctPassword){
-        return handleHttpError(res, "ERROR_INCORRECT_PASSWORD", 401);
-    }
-
-    const token = await tokenSign(user);
-    user.set("password", undefined, { strict: false });
-    res.send({ user, token, message: "User logged in." });
 }
 
 const updateUser = async (req, res) => {
@@ -119,7 +124,7 @@ const updateUser = async (req, res) => {
         res.send({ message: "Datos usuario actualizados correctamente: ", user });
 
     } catch (error) {
-        console.error("ERROR_UPDATE_USER:", error);
+        console.error(`ERROR_UPDATE_USER: ${error}`);
         handleHttpError(res, "ERROR_UPDATE_USER", 500);
     }
 };
@@ -143,7 +148,7 @@ const updateCompany = async (req, res) => {
 
         res.send({ message: "Datos compañía actualizados correctamente: ", user });
     } catch (error) {
-        console.error("ERROR_UPDATE_COMPANY:", error);
+        console.error(`ERROR_UPDATE_COMPANY: ${error}`);
         handleHttpError(res, "ERROR_UPDATE_COMPANY", 500);
     }
 };
