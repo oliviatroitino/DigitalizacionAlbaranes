@@ -7,6 +7,7 @@ const { handleHttpError } = require('../utils/handleError.js');
 const { matchedData } = require('express-validator');
 const { generateDeliveryNotePDF } = require('../utils/handlePDF.js');
 const user = require('../models/nosql/user.js');
+const { uploadToPinataSDK } = require('../utils/handleUploadIPFS.js');
 
 const createDeliveryNote = async (req, res) => {
     try {
@@ -172,6 +173,7 @@ const downloadDeliveryNotePDF = async (req, res) => {
             return handleHttpError(res, "ACCESS_DENIED", 403)
         };
 
+        if(!deliveryNote.signature) return handleHttpError(res, "DELIVERY_NOTE_NOT_SIGNED");
         const pdfStream = generateDeliveryNotePDF(deliveryNote);
 
         res.setHeader("Content-Type", "application/pdf");
@@ -184,10 +186,44 @@ const downloadDeliveryNotePDF = async (req, res) => {
     }
 };
 
+const signDeliveryNote = async (req, res) => {
+    try {
+        const file = req.file;
+        const user = req.user;
+
+        if (!file) return handleHttpError(res, "SIGNATURE_NOT_PROVIDED", 400);
+
+        const deliveryNote = await DeliveryNoteModel.findOne({ _id: req.params.id}).populate('clientId');
+        if (!deliveryNote) return handleHttpError(res, "DELIVERY_NOTE_NOT_FOUND", 404);
+        if (deliveryNote.clientId.userId.toString() !== user._id.toString()) return handleHttpError(res, "ACCESS_DENIED", 403);
+
+        const fileBuffer = file.buffer;
+        const originalName = file.originalname || 'signature.png';
+
+        const pinataResponse = await uploadToPinataSDK(fileBuffer, originalName);
+        const ipfsFile = pinataResponse.IpfsHash;
+        const url = `${process.env.PINATA_GATEWAY_URL}${ipfsFile}`
+
+        deliveryNote.signature = url;
+        await deliveryNote.save();
+
+        res.send({
+            message: "Firma subida correctamente",
+            ipfsHash: ipfsFile,
+            url: url
+        });
+    } catch (error) {
+        console.error("ERROR_SIGN_DELIVERYNOTE", error);
+        handleHttpError(res, "ERROR_SIGN_DELIVERYNOTE", 500);
+    }
+}
+
+
 module.exports = { createDeliveryNote, 
     getDeliveryNotes, 
     getDeliveryNoteById, 
     updateDeliveryNote, 
     deleteDeliveryNote,
-    downloadDeliveryNotePDF 
+    downloadDeliveryNotePDF,
+    signDeliveryNote
 };

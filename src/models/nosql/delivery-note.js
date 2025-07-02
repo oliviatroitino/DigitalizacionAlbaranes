@@ -23,7 +23,8 @@ const DeliveryNoteSchema = mongoose.Schema({
     hours: Number,
     workers: [String],
     photo: String,
-    deleted: { type: Boolean, default: false }
+    deleted: { type: Boolean, default: false },
+    signature: { type: String /* url ipfs como string */, default: null }
 });
 
 module.exports = mongoose.model("deliveryNote", DeliveryNoteSchema);
