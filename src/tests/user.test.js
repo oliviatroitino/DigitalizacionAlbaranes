@@ -13,15 +13,7 @@ jest.mock('../utils/handleEmail.js', () => ({
 }));
 
 describe('User API tests', () => {
-    var token = '';
-
-    // datos usuario inicial
-    const initialUser = {
-        name: 'TestUser',
-        email: 'testuser@example.com',
-        password: 'TestPass123'
-    };
-
+    
     beforeEach(async () => {
         await UserModel.deleteMany({});
     })
