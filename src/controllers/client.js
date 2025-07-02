@@ -6,8 +6,8 @@ const { matchedData } = require('express-validator');
 const createClient = async (req, res) => {
     try {
         const user = req.user;
-        if (!user) throw new Error("ERROR_USER_NOT_FOUND");
-        if (user.deleted) throw new Error("ERROR_USER_DELETED");
+        if (!user) return handleHttpError(res, "ERROR_USER_NOT_FOUND", 404);
+        if (user.deleted) return handleHttpError(res, "ERROR_USER_DELETED", 403);
         const body = matchedData(req);
         const result = await ClientModel.create({...body, userId: user._id});
         res.send({result, message: "Cliente creado correctamente."});
