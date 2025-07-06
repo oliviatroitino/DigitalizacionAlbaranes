@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const setupSwagger = require('./swagger');
 
 //////// Routers y conexión a MongoDB
 const dbConnect = require('./src/config/mongo');
@@ -17,6 +18,8 @@ app.use('/api/user', userRouter);
 app.use('/api/client', clientRouter);
 app.use('/api/project', projectRouter);
 app.use('/api/deliverynote', deliveryNoteRouter);
+
+setupSwagger(app);
 
 dbConnect();
 

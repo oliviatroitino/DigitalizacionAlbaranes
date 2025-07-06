@@ -46,7 +46,7 @@ const getClientById = async (req, res) => {
         res.send(client);
     } catch (error) {
         console.error(`ERROR_GET_CLIENTS: ${error}`);
-        handleHttpError(res, 'ERROR_GET_CLIENTS', 403);
+        handleHttpError(res, 'ERROR_GET_CLIENTS', 500);
     }
 }
 

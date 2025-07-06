@@ -20,6 +20,7 @@ const registerUser = async (req, res) => {
 
         body.status = false;
         body.emailCode = generateEmailCode();
+        console.log(body.emailCode)
         body.password = hashedPassword;
         body.intentos = 0;
         body.role = "user";
