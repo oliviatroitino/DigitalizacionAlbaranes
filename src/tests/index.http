@@ -11,6 +11,9 @@
 @project_id_str = "6856cc9152f3b739e9c5db26"
 @deliverynote_id = 6864e0078d3050a25990a0ce
 
+######### TEST ERROR ######################################
+GET http://localhost:3000/test-error
+
 ######### REGISTER ########################################
 POST http://localhost:3000/api/user/register
 Content-Type: application/json
